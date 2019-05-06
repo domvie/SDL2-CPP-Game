@@ -1,5 +1,10 @@
 #include "game.h"
 #include <SDL2/SDL.h>
+#include "texturemanager.h"
+
+SDL_Texture *playerTexture;
+SDL_Rect srcR, destR;
+
 Game::Game()
 {
 
@@ -41,6 +46,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
+    playerTexture = TextureManager::LoadTexture("../GameTest/assets/adventurer-idle-00.png", renderer);
 }
 
 void Game::handleEvents()
@@ -58,15 +64,18 @@ void Game::handleEvents()
 void Game::update()
 {
     cnt++;
+    destR.h = 64;
+    destR.w = 64;
+    destR.x = cnt;
+
     std::cout << cnt << std::endl;
 }
 
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    //
+    SDL_RenderCopy(renderer, playerTexture, NULL, &destR);
     SDL_RenderPresent(renderer);
-
 }
 
 void Game::clean()
