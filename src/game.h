@@ -5,6 +5,7 @@
 #include <iostream>
 #include <SDL2/SDL_image.h>
 
+
 class Game
 {
 public:
@@ -17,14 +18,15 @@ public:
     void update();
     void render();
     void clean();
+    static SDL_Renderer *renderer;
 
     bool running() { return isRunning; }
+
 
 private:
     int cnt = 0;
     bool isRunning;
     SDL_Window *window;
-    SDL_Renderer *renderer;
 };
 
 #endif // GAME_H
