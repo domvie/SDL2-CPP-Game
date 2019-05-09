@@ -5,5 +5,7 @@
 #include "ecs.h"
 #include "transformcomponent.h"
 #include "spritecomponent.h"
-
+#include "keyboardcontroller.h"
+#include "collidercomponent.h"
+#include "tilecomponent.h"
 #endif // COMPONENTS_H

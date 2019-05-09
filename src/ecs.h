@@ -12,6 +12,7 @@ class Component;
 class Entity;
 
 using ComponentID = std::size_t;
+using Group = std::size_t;
 
 inline ComponentID getComponentTypeID()
 {

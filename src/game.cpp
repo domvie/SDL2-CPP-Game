@@ -5,16 +5,24 @@
 #include "map.h"
 #include "components.h"
 #include "vector2d.h"
+#include "collision.h"
 
 //GameObject* player;
 //GameObject* enemy;
 Map* map;
 
 SDL_Renderer* Game::renderer = nullptr;
+SDL_Event Game::event;
+
+std::vector<ColliderComponent*> Game::colliders;
 
 Manager manager;
 auto& player(manager.addEntity());
 auto& enemy(manager.addEntity());
+auto& wall(manager.addEntity());
+auto& tile0(manager.addEntity());
+auto& tile1(manager.addEntity());
+auto& tile2(manager.addEntity());
 
 Game::Game()
 {
@@ -61,15 +69,30 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     //enemy = new GameObject("../GameTest/assets/GoblinKing_Walk_01.png", 50, 50);
     map = new Map();
 
-    player.addComponent<TransformComponent>();
+    Map::LoadMap("../GameTest/assets/p16x16.map", 16, 16);
+
+    // 0 = water, 1 = dirt, 2 = grass
+    /*tile0.addComponent<TileComponent>(200, 200, 32, 32, 0);
+    tile1.addComponent<TileComponent>(250,250,32,32, 1);
+    tile1.addComponent<ColliderComponent>("dirt");
+    tile2.addComponent<TileComponent>(150,150,32,32,2);
+    tile2.addComponent<ColliderComponent>("grass");*/
+
+    player.addComponent<TransformComponent>(2);
     player.addComponent<SpriteComponent>("../GameTest/assets/adventurer-idle-00.png");
+    player.addComponent<KeyboardController>();
+    player.addComponent<ColliderComponent>("player");
+
     enemy.addComponent<TransformComponent>();
     enemy.addComponent<SpriteComponent>("../GameTest/assets/GoblinKing_Walk_01.png");
+
+    wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
+    wall.addComponent<SpriteComponent>("../GameTest/assets/dirt.png");
+    wall.addComponent<ColliderComponent>("wall");
 }
 
 void Game::handleEvents()
 {
-    SDL_Event event;
     SDL_PollEvent(&event);
     switch(event.type)
     {
@@ -85,22 +108,31 @@ void Game::update()
     //enemy->update();
     manager.refresh();
     manager.update();
-    player.getComponent<TransformComponent>().position.Add(Vector2D(2,0));
-    std::cout << player.getComponent<TransformComponent>().position.x << ", " <<
+
+    for (auto cc : colliders)
+    {
+
+        Collision::AABB(player.getComponent<ColliderComponent>(), *cc);
+        //player.getComponent<TransformComponent>().scale = 1;
+        //player.getComponent<TransformComponent>().velocity * -1;
+        //std::cout << "Wall hit! " << std::endl;
+
+    }
+/*    std::cout << player.getComponent<TransformComponent>().position.x << ", " <<
                  player.getComponent<TransformComponent>().position.y << std::endl;
+*/
 
-
-    if (player.getComponent<TransformComponent>().position.x > 100)
+   /* if (player.getComponent<TransformComponent>().position.x > 100)
     {
         player.getComponent<SpriteComponent>().setTex("/media/dominic/data/dominic/Qt/projects/GameTest/assets/GoblinKing_Walk_01.png");
-    }
+    }*/
 
 }
 
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    map->DrawMap();
+    //map->DrawMap();
     manager.draw();
     //player->render();
     //enemy->render();
@@ -113,4 +145,11 @@ void Game::clean()
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
     std::cout << "Game cleaned!" << std::endl;
+}
+
+
+void Game::AddTile(int id, int x, int y)
+{
+    auto& tile(manager.addEntity());
+    tile.addComponent<TileComponent>(x, y, 32, 32, id);
 }
