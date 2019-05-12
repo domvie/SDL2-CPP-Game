@@ -12,12 +12,17 @@ void Map::LoadMap(std::string path, int sizeX, int sizeY)
     std::fstream mapfile;
     mapfile.open(path);
 
+    int srcX, srcY;
+
     for (int y = 0; y < sizeY; y++)
     {
         for (int x = 0; x < sizeX; x++)
         {
             mapfile.get(tile);
-            Game::AddTile(atoi(&tile), x * 32, y * 32);
+            srcY = atoi(&tile) * 32;
+            mapfile.get(tile);
+            srcX = atoi(&tile) * 32;
+            Game::AddTile(srcX, srcY, x * 64, y * 64);
             mapfile.ignore();
         }
 
