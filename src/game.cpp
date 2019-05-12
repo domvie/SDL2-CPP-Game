@@ -87,11 +87,10 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     tile2.addComponent<ColliderComponent>("grass");*/
 
     player.addComponent<TransformComponent>(2);
-    player.addComponent<SpriteComponent>("../GameTest/assets/adventurer-idle-00.png");
+    player.addComponent<SpriteComponent>("../GameTest/assets/player_anim.png", true);
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
-
 
     enemy.addComponent<TransformComponent>();
     enemy.addComponent<SpriteComponent>("../GameTest/assets/GoblinKing_Walk_01.png");
