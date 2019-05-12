@@ -24,6 +24,14 @@ auto& tile0(manager.addEntity());
 auto& tile1(manager.addEntity());
 auto& tile2(manager.addEntity());
 
+enum groupLabels : std::size_t
+{
+    groupMap,
+    groupPlayers,
+    groupEnemies,
+    groupColliders
+};
+
 Game::Game()
 {
 
@@ -82,6 +90,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     player.addComponent<SpriteComponent>("../GameTest/assets/adventurer-idle-00.png");
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
+    player.addGroup(groupPlayers);
+
 
     enemy.addComponent<TransformComponent>();
     enemy.addComponent<SpriteComponent>("../GameTest/assets/GoblinKing_Walk_01.png");
@@ -89,6 +99,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
     wall.addComponent<SpriteComponent>("../GameTest/assets/dirt.png");
     wall.addComponent<ColliderComponent>("wall");
+    wall.addGroup(groupMap);
 }
 
 void Game::handleEvents()
@@ -129,13 +140,32 @@ void Game::update()
 
 }
 
+auto& tiles(manager.getGroup(groupMap));
+auto& players(manager.getGroup(groupPlayers));
+auto& enemies(manager.getGroup(groupEnemies));
+//auto& colliders(manager.getGroup(groupColliders));
+
+
 void Game::render()
 {
     SDL_RenderClear(renderer);
     //map->DrawMap();
-    manager.draw();
+    //manager.draw();
     //player->render();
     //enemy->render();
+    for (auto& t : tiles)
+    {
+        t->draw();
+    }
+    for (auto& p : players)
+    {
+        p->draw();
+    }
+    for (auto& e : enemies)
+    {
+        e->draw();
+    }
+
     SDL_RenderPresent(renderer);
 }
 
@@ -152,4 +182,5 @@ void Game::AddTile(int id, int x, int y)
 {
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(x, y, 32, 32, id);
+    tile.addGroup(groupMap);
 }
