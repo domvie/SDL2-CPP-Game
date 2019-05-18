@@ -43,11 +43,6 @@ public:
         scale = sc;
     }
 
-    /*int x() { return xpos; }
-    int y() { return ypos; }
-    void x(int x) { xpos = x; }
-    void y(int y) { ypos = y; }
-*/
     void init() override
     {
         velocity.Zero();
@@ -58,12 +53,6 @@ public:
         position.x += velocity.x * speed;
         position.y += velocity.y * speed;
     }
-
-    /*void setPos(int x, int y)
-    {
-        xpos = x;
-        ypos = y;
-    }*/
 
 };
 

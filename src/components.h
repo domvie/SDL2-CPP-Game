@@ -7,5 +7,4 @@
 #include "spritecomponent.h"
 #include "keyboardcontroller.h"
 #include "collidercomponent.h"
-#include "tilecomponent.h"
 #endif // COMPONENTS_H
