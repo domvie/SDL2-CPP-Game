@@ -37,8 +37,8 @@ public:
     {
         animated = isAnimated;
 
-        Animation idle = Animation(0, 3, 100);
-        Animation walk = Animation(1, 8, 100);
+        Animation idle = Animation(0, 4, 100);
+        Animation walk = Animation(1, 4, 100);
 
         animations.emplace("Idle", idle);
         animations.emplace("walk", walk);
@@ -77,8 +77,8 @@ public:
 
         srcRect.y = animIndex * transform->height;
 
-        destRect.x = static_cast<int>(transform->position.x - Game::camera.x);
-        destRect.y = static_cast<int>(transform->position.y - Game::camera.y);
+        destRect.x = static_cast<int>(transform->position.x); // - Game::camera.x);
+        destRect.y = static_cast<int>(transform->position.y); // - Game::camera.y);
         destRect.w = transform->width * transform->scale;
         destRect.h = transform->height * transform->scale;
     }

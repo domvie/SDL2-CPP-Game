@@ -23,6 +23,9 @@ Manager manager;
 auto& player(manager.addEntity());
 auto& enemy(manager.addEntity());
 auto& wall(manager.addEntity());
+auto& block(manager.addEntity());
+auto& wall2(manager.addEntity());
+
 auto& tile0(manager.addEntity());
 auto& tile1(manager.addEntity());
 auto& tile2(manager.addEntity());
@@ -30,7 +33,7 @@ auto& tile2(manager.addEntity());
 const char* mapfile = "../GameTest/assets/terrain_ss.png";
 
 
-enum groupLabels : std::size_t
+/*enum groupLabels : std::size_t
 {
     groupMap,
     groupPlayers,
@@ -41,8 +44,8 @@ enum groupLabels : std::size_t
 auto& tiles(manager.getGroup(groupMap));
 auto& players(manager.getGroup(groupPlayers));
 auto& enemies(manager.getGroup(groupEnemies));
-//auto& colliders(manager.getGroup(groupColliders));
-
+auto& colliders(manager.getGroup(groupColliders));
+*/
 
 Game::Game()
 {
@@ -87,9 +90,9 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
     //player = new GameObject("../GameTest/assets/adventurer-idle-00.png", 0, 0);
     //enemy = new GameObject("../GameTest/assets/GoblinKing_Walk_01.png", 50, 50);
-    map = new Map();
+    //map = new Map();
 
-    Map::LoadMap("../GameTest/assets/map.map", 25, 20);
+    //Map::LoadMap("../GameTest/assets/map.map", 25, 20);
 
     // 0 = water, 1 = dirt, 2 = grass
     /*tile0.addComponent<TileComponent>(200, 200, 32, 32, 0);
@@ -98,19 +101,27 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     tile2.addComponent<TileComponent>(150,150,32,32,2);
     tile2.addComponent<ColliderComponent>("grass");*/
 
-    player.addComponent<TransformComponent>(2);
-    player.addComponent<SpriteComponent>("../GameTest/assets/player_anim.png", true);
+    player.addComponent<TransformComponent>(350,270,37,50,2);
+    player.addComponent<SpriteComponent>("../GameTest/assets/adventurer.png", true);
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
-    player.addGroup(groupPlayers);
+    //player.addGroup(groupPlayers);
 
-    enemy.addComponent<TransformComponent>();
-    enemy.addComponent<SpriteComponent>("../GameTest/assets/GoblinKing_Walk_01.png");
-/*
+    //enemy.addComponent<TransformComponent>();
+    //enemy.addComponent<SpriteComponent>("../GameTest/assets/GoblinKing_Walk_01.png");
+
     wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
+    block.addComponent<TransformComponent>(100.0f, 100.0f, 200, 200, 1);
+    wall2.addComponent<TransformComponent>(500.0f, 200.0f, 20, 300, 1);
+
     wall.addComponent<SpriteComponent>("../GameTest/assets/dirt.png");
     wall.addComponent<ColliderComponent>("wall");
-    wall.addGroup(groupMap);*/
+    block.addComponent<SpriteComponent>("../GameTest/assets/dirt.png");
+    block.addComponent<ColliderComponent>("block");
+    wall2.addComponent<SpriteComponent>("../GameTest/assets/dirt.png");
+    wall2.addComponent<ColliderComponent>("wall2");
+
+    //wall.addGroup(groupMap);
 }
 
 void Game::handleEvents()
@@ -131,17 +142,17 @@ void Game::update()
     manager.refresh();
     manager.update();
 
-    camera.x = player.getComponent<TransformComponent>().position.x - 400;
-    camera.y = player.getComponent<TransformComponent>().position.y - 320;
+    //camera.x = player.getComponent<TransformComponent>().position.x - 400;
+    //camera.y = player.getComponent<TransformComponent>().position.y - 320;
 
-    if(camera.x < 0)
+    /*if(camera.x < 0)
         camera.x = 0;
     if(camera.y < 0)
         camera.y = 0;
     if(camera.x > camera.w)
         camera.x = camera.w;
     if(camera.y > camera.h)
-        camera.y = camera.h;
+        camera.y = camera.h;*/
 
     Vector2D pVelocity = player.getComponent<TransformComponent>().velocity;
     int pSpeed = player.getComponent<TransformComponent>().speed;
@@ -149,17 +160,21 @@ void Game::update()
     for (auto cc : colliders)
     {
 
-        Collision::AABB(player.getComponent<ColliderComponent>(), *cc);
-        //player.getComponent<TransformComponent>().scale = 1;
-        //player.getComponent<TransformComponent>().velocity * -1;
-        //std::cout << "Wall hit! " << std::endl;
+        if(Collision::AABB(player.getComponent<ColliderComponent>(), *cc))
+        {
+            //player.getComponent<TransformComponent>().scale = 1;
+            player.getComponent<TransformComponent>().velocity * -1;
+            //std::cout << "Wall hit! " << std::endl;
+        }
+
 
     }
-    for (auto t : tiles)
+
+   /* for (auto t : tiles)
     {
         t->getComponent<TileComponent>().destRect.x += -(pVelocity.x * pSpeed);
         t->getComponent<TileComponent>().destRect.y += -(pVelocity.y * pSpeed);
-    }
+    }*/
 /*    std::cout << player.getComponent<TransformComponent>().position.x << ", " <<
                  player.getComponent<TransformComponent>().position.y << std::endl;
 */
@@ -179,10 +194,10 @@ void Game::render()
 {
     SDL_RenderClear(renderer);
     //map->DrawMap();
-    //manager.draw();
+    manager.draw();
     //player->render();
     //enemy->render();
-    for (auto& t : tiles)
+    /*for (auto& t : tiles)
     {
         t->draw();
     }
@@ -193,7 +208,7 @@ void Game::render()
     for (auto& e : enemies)
     {
         e->draw();
-    }
+    }*/
 
     SDL_RenderPresent(renderer);
 }
@@ -211,5 +226,5 @@ void Game::AddTile(int srcX, int srcY, int xpos, int ypos)
 {
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, mapfile);
-    tile.addGroup(groupMap);
+    //tile.addGroup(groupMap);
 }
